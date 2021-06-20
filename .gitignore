@@ -1,2 +1,7 @@
 ./node_modules
 node_modules
+yarn_lock
+./yarn_lock
+./.idea
+.idea
+/yarn.lock
