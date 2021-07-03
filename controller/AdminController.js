@@ -1,45 +1,111 @@
 const Category = require("../models/Category");
+const Bank = require("../models/Bank");
 module.exports = {
   viewDashboard: (req, res) => {
-    res.render("admin/dashboard/view_dashboard");
+    res.render("admin/dashboard/view_dashboard", {
+      title: "Staycation | Dashboard",
+    });
   },
 
   viewCategory: async (req, res) => {
-    const category = await Category.find();
-    res.render("admin/category/view_category", { category });
+    try {
+      const category = await Category.find();
+      const alertMessage = req.flash("alertMessage");
+      const alertStatus = req.flash("alertStatus");
+      const alert = {
+        message: alertMessage,
+        status: alertStatus,
+      };
+      console.log(alert);
+      res.render("admin/category/view_category", {
+        category,
+        alert,
+        title: "Staycation | Category",
+      });
+    } catch (err) {
+      res.redirect("/admin/category");
+    }
   },
 
   addCategory: async (req, res) => {
-    const { name } = req.body;
-    console.log(name);
-    await Category.create({ name });
-    res.redirect("/admin/category");
+    try {
+      const { name } = req.body;
+      await Category.create({ name });
+      req.flash("alertMessage", "Success Add Category");
+      req.flash("alertStatus", "success");
+      res.redirect("/admin/category");
+    } catch (err) {
+      req.flash("alertMessage", `${err.status}`);
+      req.flash("alertStatus", "danger");
+      res.redirect("/admin/category");
+    }
   },
 
   ediCategory: async (req, res) => {
-    const { id, name } = req.body;
-    const category = await Category.findOne({ _id: id });
-    category.name = name;
-    await category.save();
-    res.redirect("/admin/category");
+    try {
+      const { id, name } = req.body;
+      const category = await Category.findOne({ _id: id });
+      category.name = name;
+      await category.save();
+      req.flash("alertMessage", "Success Edit Category");
+      req.flash("alertStatus", "success");
+      res.redirect("/admin/category");
+    } catch (error) {
+      req.flash("alertMessage", `${err.status}`);
+      req.flash("alertStatus", "danger");
+      res.redirect("/admin/category");
+    }
   },
 
   deleteCategory: async (req, res) => {
-    const { id } = req.params;
-    const category = await Category.findOne({ _id: id });
-    await category.remove();
-    res.redirect("/admin/category");
+    try {
+      const { id } = req.params;
+      const category = await Category.findOne({ _id: id });
+      await category.remove();
+      req.flash("alertMessage", "Success delete Category");
+      req.flash("alertStatus", "success");
+      res.redirect("/admin/category");
+    } catch (error) {
+      req.flash("alertMessage", `${err.status}`);
+      req.flash("alertStatus", "danger");
+      res.redirect("/admin/category");
+    }
   },
 
   viewBank: (req, res) => {
-    res.render("admin/bank/view_bank");
+    const alertMessage = req.flash("alertMessage");
+    const alertStatus = req.flash("alertStatus");
+    const alert = {
+      message: alertMessage,
+      status: alertStatus,
+    };
+    res.render("admin/bank/view_bank", { title: "Staycation | Bank", alert });
+  },
+
+  addBank: async (req, res) => {
+    try {
+      const { name, nameBank, nomorRekening } = req.body;
+      await Bank.create({
+        name,
+        nameBank,
+        nomorRekening,
+        imageUrl: `images/${req.file.filename}`,
+      });
+      req.flash("alertMessage", "Success Add Bank");
+      req.flash("alertStatus", "success");
+      res.redirect("/admin/bank");
+    } catch (error) {
+      req.flash("alertMessage", `${error.status}`);
+      req.flash("alertStatus", "danger");
+      res.redirect("/admin/bank");
+    }
   },
 
   viewItem: (req, res) => {
-    res.render("admin/item/view_item");
+    res.render("admin/item/view_item", { title: "Staycation | Item" });
   },
 
   viewBooking: (req, res) => {
-    res.render("admin/booking/view_booking");
+    res.render("admin/booking/view_booking", { title: "Staycation | Booking" });
   },
 };
