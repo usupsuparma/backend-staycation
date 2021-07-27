@@ -25,7 +25,7 @@
                 <td><%= booking[i].memberId.firstName %> <%= booking[i].memberId.lastName %></td>
                 <td><%= booking[i].payments.status %></td>
                 <td>
-                    <a href="javascript:void()" type="button" class="btn btn-success btn-cirle btn-sm button-update"><i class="fas fa-eye"></i></a>
+                    <a href="/admin/booking/<%= booking[i].id %>" type="button" class="btn btn-success btn-cirle btn-sm button-update"><i class="fas fa-eye"></i></a>
                 </td>
               </tr>
             <%}%>

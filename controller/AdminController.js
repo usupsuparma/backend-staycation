@@ -594,14 +594,31 @@ module.exports = {
   },
 
   viewBooking: async (req, res) => {
-    const booking = await Booking.find()
+    const bookings = await Booking.find()
       .populate('bankId')
       .populate('memberId');
-    console.log(booking);
     res.render('admin/booking/view_booking', {
       title: 'Staycation | Booking',
       user: req.session.user,
-      booking,
+      booking: bookings,
     });
+  },
+
+  viewDetailBooking: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const booking = await Booking.findOne({ _id: id })
+        .populate('bankId')
+        .populate('memberId');
+      console.log(booking);
+      res.render('admin/booking/view_detail_booking', {
+        title: 'Staycation | Detail Booking',
+        user: req.session.user,
+        booking,
+      });
+    } catch (error) {
+      res.redirect('/admin/booking');
+      console.log(error);
+    }
   },
 };
